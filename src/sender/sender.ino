@@ -13,16 +13,18 @@ const long frequency=433.775E6; //given in MHz
 const int spreading_factor=12; //6-12
 const int cr_denominator=5; // 5-8
 const int bandwitdh=125E3; // given in KHz
+// LoRa HW
+const int cs_pin=15;
+const int reset_pin=5;
+const int dio0_pin=4;
 
 //APRS
 const String aprs_path="WIDE1-1,WIDE2-2";
 const String aprs_source="DK9MBS-1";
 const String aprs_destination="APRS";
+const int aprs_timeout=60000;
 
 int counter = 0;
-const int cs_pin=15;
-const int reset_pin=5;
-const int dio0_pin=4;
 
 
 void setup() {
@@ -50,7 +52,7 @@ void setup() {
 void loop() {
   static unsigned long lastLoop=0;
 
-  if(millis()>lastLoop+10000) {
+  if(millis()>lastLoop+aprs_timeout || lastLoop==0) {
 
     String data;
     data=build_aprs_message(aprs_source, aprs_destination, aprs_path);
@@ -80,7 +82,7 @@ String build_aprs_message(const String & source, const String & destination, con
   msg.setSource(source);
   msg.setDestination(destination);
   msg.setPath(path);
-  msg.getBody()->setData("!5202.93N/01022.37E_.../...g...t050r...p...P...h00b......DHT22");
+  msg.getBody()->setData("!5201.89N/01021.86E>144.650 LoRa APRS Tracker (Homemade) by DK9MBS");
 
   String data = msg.encode();
   return data;
