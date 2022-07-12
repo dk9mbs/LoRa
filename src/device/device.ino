@@ -145,10 +145,11 @@ void loop() {
     Serial.print("rx package '");
 
     while (LoRa.available()) {
-      packet.concat((char)(LoRa.read()));
+      //packet.concat((char)(LoRa.read()));
+      packet=LoRa.readString();
     }
+/*
     packet=packet.substring(3);
-
     APRSMessage msg;
     msg.decode(packet);
     msg.setPath(readConfigValue("aprsis","igatecall")+"*");
@@ -165,7 +166,8 @@ void loop() {
     if(wlanMode=="client" && WiFi.status()==WL_CONNECTED){
       client.print(packet+"\r\n");
     } 
-
+*/
+    Serial.print(packet);
     Serial.println("ok");
   
   }
@@ -199,6 +201,7 @@ bool sendTcpBeaconText(WiFiClient &client, const String &call, const String &msg
   Serial.print("igate beacon sendig via tcpip...");
   client.print(call+">APRS,TCPIP*:=5202.93N/01022.37E&"+msg+"\r\n");
   Serial.println("ok");
+  return true;
 }
 
 bool connectAprsIsServer(WiFiClient &client, const String &call, const String &pass, const String &filter) {
@@ -235,7 +238,7 @@ boolean setupLoRa() {
   LoRa.setSpreadingFactor(spreading_factor);
   LoRa.setSignalBandwidth(bandwitdh);
   LoRa.setCodingRate4(cr_denominator);
-
+  LoRa.setSyncWord(0x12);
   LoRa.enableCrc();
   //LoRa.setTxPower(17);
   // Uncomment the next line to disable the default AGC and set LNA gain, values between 1 - 6 are supported
@@ -244,5 +247,6 @@ boolean setupLoRa() {
   //only if async
   //LoRa.onReceive(onReceive);
   //LoRa.receive();
+  return true;
 
 }

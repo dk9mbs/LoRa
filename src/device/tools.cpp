@@ -36,6 +36,7 @@ const String readConfigValue(String topic,String name){
   if(name=="destination" && topic=="aprs") return "APRS";
 
   Serial.println("Topic or name not found!:"+topic+" "+name);
+  return "";
 }
 
 void setupIo() {
